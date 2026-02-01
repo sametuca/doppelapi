@@ -24,11 +24,29 @@ function delayMiddleware(minMs = 500, maxMs = 1500) {
         setTimeout(() => next(), delay);
     };
 }
-function createMockApp(api, enableDelay = false) {
+function chaosMiddleware(failureRate = 0.1) {
+    return (req, res, next) => {
+        const random = Math.random();
+        if (random < failureRate) {
+            console.log(chalk_1.default.red(`💥 Chaos: ${req.method} ${req.url} - Returning 500 error (${Math.round(failureRate * 100)}% chance)`));
+            res.status(500).json({
+                error: 'Internal Server Error',
+                message: 'Simulated server failure (chaos mode)',
+                timestamp: new Date().toISOString()
+            });
+            return;
+        }
+        next();
+    };
+}
+function createMockApp(api, enableDelay = false, enableChaos = false) {
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
     if (enableDelay) {
         app.use(delayMiddleware());
+    }
+    if (enableChaos) {
+        app.use(chaosMiddleware());
     }
     app.use((req, _res, next) => {
         console.log(`${chalk_1.default.gray(new Date().toISOString())} | ${req.method} ${req.url}`);
@@ -71,13 +89,16 @@ function createMockApp(api, enableDelay = false) {
     });
     return app;
 }
-function startMockServer(api, port, enableDelay = false) {
-    const app = createMockApp(api, enableDelay);
+function startMockServer(api, port, enableDelay = false, enableChaos = false) {
+    const app = createMockApp(api, enableDelay, enableChaos);
     const server = app.listen(port, () => {
         console.log(chalk_1.default.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
         console.log(chalk_1.default.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
         if (enableDelay) {
             console.log(chalk_1.default.yellow(`   ⏱️  Latency simulation: ENABLED (500-1500ms)`));
+        }
+        if (enableChaos) {
+            console.log(chalk_1.default.red(`   💥 Chaos mode: ENABLED (10% random failures)`));
         }
         console.log(chalk_1.default.bold('\n🔗 Available Endpoints:'));
         const paths = api.paths || {};

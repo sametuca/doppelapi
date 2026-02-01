@@ -70,14 +70,15 @@ program
   .option('-p, --port <number>', 'Port number to use', '3000')
   .option('-w, --watch', 'Watch for changes in the OpenAPI file', false)
   .option('-d, --delay', 'Enable latency simulation (500-1500ms)', false)
-  .action(async (file: string, options: { port: string; watch: boolean; delay: boolean }) => {
+  .option('-c, --chaos', 'Enable chaos mode (10% random failures)', false)
+  .action(async (file: string, options: { port: string; watch: boolean; delay: boolean; chaos: boolean }) => {
     await startServer(file, options);
   });
 
 // Handle default case (no args) -> Interactive Mode
 if (!process.argv.slice(2).length) {
   runInteractiveMode().then((config) => {
-    startServer(config.file, { port: config.port, watch: config.watch, delay: false });
+    startServer(config.file, { port: config.port, watch: config.watch, delay: false, chaos: false });
   });
 } else {
   program.parse(process.argv);

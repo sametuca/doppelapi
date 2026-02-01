@@ -63,11 +63,14 @@ async function startServer(file, options) {
                     if (options.delay) {
                         console.log(chalk_1.default.yellow(`Latency: Enabled`));
                     }
+                    if (options.chaos) {
+                        console.log(chalk_1.default.red(`Chaos: Enabled`));
+                    }
                 }
                 const api = await (0, parser_1.parseOpenAPIFile)(file);
                 console.log(chalk_1.default.green('\n✓ API parsed successfully. Starting server...'));
                 const { startMockServer } = await Promise.resolve().then(() => __importStar(require('./core/server')));
-                currentServer = startMockServer(api, port, options.delay || false);
+                currentServer = startMockServer(api, port, options.delay || false, options.chaos || false);
             }
             catch (error) {
                 console.error(chalk_1.default.red('Error parsing or starting server:'), error.message);
@@ -95,12 +98,13 @@ program
     .option('-p, --port <number>', 'Port number to use', '3000')
     .option('-w, --watch', 'Watch for changes in the OpenAPI file', false)
     .option('-d, --delay', 'Enable latency simulation (500-1500ms)', false)
+    .option('-c, --chaos', 'Enable chaos mode (10% random failures)', false)
     .action(async (file, options) => {
     await startServer(file, options);
 });
 if (!process.argv.slice(2).length) {
     (0, interactive_1.runInteractiveMode)().then((config) => {
-        startServer(config.file, { port: config.port, watch: config.watch, delay: false });
+        startServer(config.file, { port: config.port, watch: config.watch, delay: false, chaos: false });
     });
 }
 else {

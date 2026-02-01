@@ -12,6 +12,8 @@ MockDraft is a powerful, AI-accelerated CLI tool that converts your OpenAPI (Swa
 - **🔥 Hot Reload**: Automatically watches your OpenAPI file and restarts the server on changes.
 - **⏱️ Network Simulation**: Simulate network latency (500-1500ms) to test loading states.
 - **💥 Chaos Mode**: Simulate server instability with random 500 errors (10% chance) to test error handling.
+- **🌐 CORS Enabled**: Automatically handles CORS headers, allowing access from any frontend application.
+- **🐳 Docker Support**: Run explicitly in a containerized environment for consistent testing.
 - **✨ Interactive CLI**: User-friendly wizard to auto-discover files and configure options.
 
 ## 📦 Installation
@@ -44,6 +46,15 @@ mockdraft start ./openapi.yaml --chaos
 
 # Combine flags
 mockdraft start ./ecommerce.json --watch --delay --chaos
+```
+
+### 🐳 Docker Usage
+
+You can run MockDraft as a Docker container:
+
+```bash
+docker build -t mockdraft .
+docker run -p 3000:3000 -v $(pwd)/openapi.yaml:/app/openapi.yaml mockdraft start /app/openapi.yaml
 ```
 
 ## 📝 Configuration

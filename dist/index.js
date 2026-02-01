@@ -60,11 +60,14 @@ async function startServer(file, options) {
                     console.log(chalk_1.default.green('Starting application...'));
                     console.log(chalk_1.default.blue(`File: ${file}`));
                     console.log(chalk_1.default.blue(`Port: ${port}`));
+                    if (options.delay) {
+                        console.log(chalk_1.default.yellow(`Latency: Enabled`));
+                    }
                 }
                 const api = await (0, parser_1.parseOpenAPIFile)(file);
                 console.log(chalk_1.default.green('\n✓ API parsed successfully. Starting server...'));
                 const { startMockServer } = await Promise.resolve().then(() => __importStar(require('./core/server')));
-                currentServer = startMockServer(api, port);
+                currentServer = startMockServer(api, port, options.delay || false);
             }
             catch (error) {
                 console.error(chalk_1.default.red('Error parsing or starting server:'), error.message);
@@ -91,12 +94,13 @@ program
     .argument('<file>', 'Path to the OpenAPI file to process')
     .option('-p, --port <number>', 'Port number to use', '3000')
     .option('-w, --watch', 'Watch for changes in the OpenAPI file', false)
+    .option('-d, --delay', 'Enable latency simulation (500-1500ms)', false)
     .action(async (file, options) => {
     await startServer(file, options);
 });
 if (!process.argv.slice(2).length) {
     (0, interactive_1.runInteractiveMode)().then((config) => {
-        startServer(config.file, { port: config.port, watch: config.watch });
+        startServer(config.file, { port: config.port, watch: config.watch, delay: false });
     });
 }
 else {

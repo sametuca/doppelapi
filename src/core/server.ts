@@ -17,9 +17,45 @@ jsf.option({
     useExamplesValue: true,
 });
 
-export function createMockApp(api: OpenAPI.Document): express.Express {
+// Delay middleware for latency simulation
+function delayMiddleware(minMs: number = 500, maxMs: number = 1500) {
+    return (req: Request, _res: Response, next: express.NextFunction) => {
+        const delay = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+        console.log(chalk.yellow(`⏱️  Delaying ${req.method} ${req.url} by ${delay}ms`));
+        setTimeout(() => next(), delay);
+    };
+}
+
+// Chaos middleware for random failures
+function chaosMiddleware(failureRate: number = 0.1) {
+    return (req: Request, res: Response, next: express.NextFunction) => {
+        const random = Math.random();
+        if (random < failureRate) {
+            console.log(chalk.red(`💥 Chaos: ${req.method} ${req.url} - Returning 500 error (${Math.round(failureRate * 100)}% chance)`));
+            res.status(500).json({ 
+                error: 'Internal Server Error', 
+                message: 'Simulated server failure (chaos mode)',
+                timestamp: new Date().toISOString()
+            });
+            return;
+        }
+        next();
+    };
+}
+
+export function createMockApp(api: OpenAPI.Document, enableDelay = false, enableChaos = false): express.Express {
     const app = express();
     app.use(express.json());
+
+    // Add delay middleware if enabled
+    if (enableDelay) {
+        app.use(delayMiddleware());
+    }
+
+    // Add chaos middleware if enabled
+    if (enableChaos) {
+        app.use(chaosMiddleware());
+    }
 
     // Log requests
     app.use((req, _res, next) => {
@@ -82,12 +118,18 @@ export function createMockApp(api: OpenAPI.Document): express.Express {
     return app;
 }
 
-export function startMockServer(api: OpenAPI.Document, port: number): Server {
-    const app = createMockApp(api);
+export function startMockServer(api: OpenAPI.Document, port: number, enableDelay = false, enableChaos = false): Server {
+    const app = createMockApp(api, enableDelay, enableChaos);
 
     const server = app.listen(port, () => {
         console.log(chalk.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
         console.log(chalk.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
+        if (enableDelay) {
+            console.log(chalk.yellow(`   ⏱️  Latency simulation: ENABLED (500-1500ms)`));
+        }
+        if (enableChaos) {
+            console.log(chalk.red(`   💥 Chaos mode: ENABLED (10% random failures)`));
+        }
         console.log(chalk.bold('\n🔗 Available Endpoints:'));
 
         const paths = api.paths || {};

@@ -17,9 +17,19 @@ json_schema_faker_1.default.option({
     useDefaultValue: true,
     useExamplesValue: true,
 });
-function createMockApp(api) {
+function delayMiddleware(minMs = 500, maxMs = 1500) {
+    return (req, _res, next) => {
+        const delay = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
+        console.log(chalk_1.default.yellow(`⏱️  Delaying ${req.method} ${req.url} by ${delay}ms`));
+        setTimeout(() => next(), delay);
+    };
+}
+function createMockApp(api, enableDelay = false) {
     const app = (0, express_1.default)();
     app.use(express_1.default.json());
+    if (enableDelay) {
+        app.use(delayMiddleware());
+    }
     app.use((req, _res, next) => {
         console.log(`${chalk_1.default.gray(new Date().toISOString())} | ${req.method} ${req.url}`);
         next();
@@ -61,11 +71,14 @@ function createMockApp(api) {
     });
     return app;
 }
-function startMockServer(api, port) {
-    const app = createMockApp(api);
+function startMockServer(api, port, enableDelay = false) {
+    const app = createMockApp(api, enableDelay);
     const server = app.listen(port, () => {
         console.log(chalk_1.default.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
         console.log(chalk_1.default.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
+        if (enableDelay) {
+            console.log(chalk_1.default.yellow(`   ⏱️  Latency simulation: ENABLED (500-1500ms)`));
+        }
         console.log(chalk_1.default.bold('\n🔗 Available Endpoints:'));
         const paths = api.paths || {};
         Object.entries(paths).forEach(([pathName, pathItem]) => {

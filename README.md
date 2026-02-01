@@ -27,7 +27,6 @@ npm install -g doppelapi
 ## Usage
 
 ### Quick Start (Interactive Mode)
-### Quick Start (Interactive Mode)
 Simply run the command without arguments to launch the wizard:
 ```bash
 doppelapi
@@ -44,6 +43,10 @@ The interactive menu will auto-discover OpenAPI files in your directory, or let 
 ```bash
 # Basic usage
 doppelapi start ./openapi.yaml --port 3000
+
+# Basic usage with custom port
+doppelapi start /Users/sametuca/Desktop/example.json --port 8080
+doppelapi start /Users/sametuca/Desktop/example.yaml --port 8080
 
 # Enable Hot Reload
 doppelapi start ./openapi.yaml --watch

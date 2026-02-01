@@ -43,7 +43,7 @@ const parser_1 = require("./core/parser");
 const interactive_1 = require("./core/interactive");
 const program = new commander_1.Command();
 program
-    .name('mockdraft')
+    .name('doppelapi')
     .description('Turn your OpenAPI file into a smart mock server in seconds.')
     .version('1.0.0');
 async function startServer(file, options) {
@@ -79,9 +79,9 @@ async function startServer(file, options) {
         await start();
         if (options.watch) {
             const chokidar = await Promise.resolve().then(() => __importStar(require('chokidar')));
-            console.log(chalk_1.default.blue(`\n👀 Watching for changes in ${file}...`));
+            console.log(chalk_1.default.blue(`\nWatching for changes in ${file}...`));
             chokidar.watch(file).on('change', async () => {
-                console.log(chalk_1.default.blue(`\n📝 File changed: ${file}`));
+                console.log(chalk_1.default.blue(`\nFile changed: ${file}`));
                 await start();
             });
         }

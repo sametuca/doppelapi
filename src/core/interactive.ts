@@ -34,7 +34,7 @@ export async function runInteractiveMode() {
 
     const { selectedFile } = await inquirer.prompt([
         {
-            type: 'list',
+            type: 'rawlist',
             name: 'selectedFile',
             message: 'Select an OpenAPI file (or choose custom path):',
             choices: choices,

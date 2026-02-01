@@ -27,9 +27,17 @@ npm install -g doppelapi
 ## Usage
 
 ### Quick Start (Interactive Mode)
+### Quick Start (Interactive Mode)
 Simply run the command without arguments to launch the wizard:
 ```bash
 doppelapi
+```
+The interactive menu will auto-discover OpenAPI files in your directory, or let you provide a custom path:
+```text
+? Select an OpenAPI file (or choose custom path):
+  > openapi.yaml
+    ecommerce.json
+    Enter custom path manually...
 ```
 
 ### Command Line Arguments

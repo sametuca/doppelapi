@@ -96,7 +96,7 @@ async function generateDashboard(api, port, enableDelay, enableChaos) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title} - MockDraft Dashboard</title>
+    <title>${title} - DoppelAPI Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         function toggleDetails(id) {
@@ -118,7 +118,7 @@ async function generateDashboard(api, port, enableDelay, enableChaos) {
         <!-- Header -->
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6 flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">MockDraft Dashboard</h1>
+                <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">DoppelAPI Dashboard</h1>
                 <p class="text-gray-500 mt-1">Mocking <span class="font-semibold text-gray-800">${title}</span> v${version}</p>
             </div>
             <div class="flex space-x-2">
@@ -174,7 +174,7 @@ async function generateDashboard(api, port, enableDelay, enableChaos) {
         </div>
 
         <div class="mt-8 text-center text-gray-400 text-sm">
-            Powered by <a href="#" class="text-blue-500 hover:underline">MockDraft</a> • <a href="http://localhost:${port}/_mockdraft" class="hover:text-blue-500">Refresh Dashboard</a>
+            Powered by <a href="#" class="text-blue-500 hover:underline">DoppelAPI</a> • <a href="http://localhost:${port}/_doppelapi" class="hover:text-blue-500">Refresh Dashboard</a>
         </div>
 
     </div>

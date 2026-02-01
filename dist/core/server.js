@@ -141,12 +141,12 @@ function startMockServer(api, port, enableDelay = false, enableChaos = false) {
             res.status(500).json({ error: 'Failed to generate Postman collection' });
         }
     });
-    app.get('/_mockdraft', async (_req, res) => {
+    app.get('/_doppelapi', async (_req, res) => {
         const html = await (0, dashboard_1.generateDashboard)(api, port, enableDelay, enableChaos);
         res.send(html);
     });
     const server = app.listen(port, () => {
-        console.log(chalk_1.default.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
+        console.log(chalk_1.default.green(`\n🚀 DoppelAPI server running at http://localhost:${port}`));
         console.log(chalk_1.default.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
         if (enableDelay) {
             console.log(chalk_1.default.yellow(`   ⏱️  Latency simulation: ENABLED (500-1500ms)`));
@@ -177,7 +177,7 @@ function startMockServer(api, port, enableDelay = false, enableChaos = false) {
             });
         });
         console.log(chalk_1.default.cyan(`\n📦 Postman Collection: http://localhost:${port}/_postman/collection.json`));
-        const dashboardUrl = `http://localhost:${port}/_mockdraft`;
+        const dashboardUrl = `http://localhost:${port}/_doppelapi`;
         console.log(chalk_1.default.magenta(`✨ Dashboard:          ${dashboardUrl}`));
         console.log('');
         Promise.resolve().then(() => __importStar(require('open'))).then((open) => {

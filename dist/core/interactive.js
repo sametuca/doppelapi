@@ -8,11 +8,11 @@ const inquirer_1 = __importDefault(require("inquirer"));
 const fs_1 = __importDefault(require("fs"));
 const chalk_1 = __importDefault(require("chalk"));
 async function runInteractiveMode() {
-    console.log(chalk_1.default.bold.cyan('\n👋 Welcome to MockDraft!'));
+    console.log(chalk_1.default.bold.cyan('\n👋 Welcome to DoppelAPI!'));
     console.log(chalk_1.default.dim('Let\'s get your mock server up and running.\n'));
     const files = fs_1.default.readdirSync(process.cwd()).filter(file => file.endsWith('.yaml') || file.endsWith('.yml') || file.endsWith('.json'));
     if (files.length === 0) {
-        console.log(chalk_1.default.yellow('⚠ No OpenAPI files (.yaml, .yml, .json) found in current directory.'));
+        console.log(chalk_1.default.yellow('No OpenAPI files (.yaml, .yml, .json) found in current directory.'));
         const { manualFile } = await inquirer_1.default.prompt([
             {
                 type: 'input',
@@ -26,11 +26,11 @@ async function runInteractiveMode() {
     const choices = [
         ...files,
         new inquirer_1.default.Separator(),
-        { name: '📂 Enter custom path manually...', value: 'REQ_MANUAL_PATH' }
+        { name: 'Enter custom path manually...', value: 'REQ_MANUAL_PATH' }
     ];
     const { selectedFile } = await inquirer_1.default.prompt([
         {
-            type: 'list',
+            type: 'rawlist',
             name: 'selectedFile',
             message: 'Select an OpenAPI file (or choose custom path):',
             choices: choices,

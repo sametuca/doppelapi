@@ -24,7 +24,7 @@ jsf.option({
 function delayMiddleware(minMs: number = 500, maxMs: number = 1500) {
     return (req: Request, _res: Response, next: express.NextFunction) => {
         const delay = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
-        console.log(chalk.yellow(`⏱️  Delaying ${req.method} ${req.url} by ${delay}ms`));
+        console.log(chalk.yellow(`Delaying ${req.method} ${req.url} by ${delay}ms`));
         setTimeout(() => next(), delay);
     };
 }
@@ -34,7 +34,7 @@ function chaosMiddleware(failureRate: number = 0.1) {
     return (req: Request, res: Response, next: express.NextFunction) => {
         const random = Math.random();
         if (random < failureRate) {
-            console.log(chalk.red(`💥 Chaos: ${req.method} ${req.url} - Returning 500 error (${Math.round(failureRate * 100)}% chance)`));
+            console.log(chalk.red(`Chaos: ${req.method} ${req.url} - Returning 500 error (${Math.round(failureRate * 100)}% chance)`));
             res.status(500).json({
                 error: 'Internal Server Error',
                 message: 'Simulated server failure (chaos mode)',
@@ -135,7 +135,7 @@ export function startMockServer(api: OpenAPI.Document, port: number, enableDelay
             const collection = generatePostmanCollection(api, baseUrl);
             res.setHeader('Content-Disposition', 'attachment; filename="collection.json"');
             res.json(collection);
-            console.log(chalk.cyan('📦 Postman collection exported'));
+            console.log(chalk.cyan('Postman collection exported'));
         } catch (error) {
             console.error('Error generating Postman collection:', error);
             res.status(500).json({ error: 'Failed to generate Postman collection' });
@@ -149,15 +149,15 @@ export function startMockServer(api: OpenAPI.Document, port: number, enableDelay
     });
 
     const server = app.listen(port, () => {
-        console.log(chalk.green(`\n🚀 DoppelAPI server running at http://localhost:${port}`));
+        console.log(chalk.green(`\nDoppelAPI server running at http://localhost:${port}`));
         console.log(chalk.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
         if (enableDelay) {
-            console.log(chalk.yellow(`   ⏱️  Latency simulation: ENABLED (500-1500ms)`));
+            console.log(chalk.yellow(`   Latency simulation: ENABLED (500-1500ms)`));
         }
         if (enableChaos) {
-            console.log(chalk.red(`   💥 Chaos mode: ENABLED (10% random failures)`));
+            console.log(chalk.red(`   Chaos mode: ENABLED (10% random failures)`));
         }
-        console.log(chalk.bold('\n🔗 Available Endpoints:'));
+        console.log(chalk.bold('\nAvailable Endpoints:'));
 
         const paths = api.paths || {};
         Object.entries(paths).forEach(([pathName, pathItem]) => {
@@ -178,9 +178,9 @@ export function startMockServer(api: OpenAPI.Document, port: number, enableDelay
             });
         });
 
-        console.log(chalk.cyan(`\n📦 Postman Collection: http://localhost:${port}/_postman/collection.json`));
+        console.log(chalk.cyan(`\nPostman Collection: http://localhost:${port}/_postman/collection.json`));
         const dashboardUrl = `http://localhost:${port}/_doppelapi`;
-        console.log(chalk.magenta(`✨ Dashboard:          ${dashboardUrl}`));
+        console.log(chalk.magenta(`Dashboard:          ${dashboardUrl}`));
         console.log(''); // Empty line
 
         // Open dashboard in browser

@@ -49,10 +49,10 @@ async function startServer(file: string, options: { port: string | number; watch
 
     if (options.watch) {
       const chokidar = await import('chokidar');
-      console.log(chalk.blue(`\n👀 Watching for changes in ${file}...`));
+      console.log(chalk.blue(`\nWatching for changes in ${file}...`));
 
       chokidar.watch(file).on('change', async () => {
-        console.log(chalk.blue(`\n📝 File changed: ${file}`));
+        console.log(chalk.blue(`\nFile changed: ${file}`));
         await start();
       });
     }

@@ -13,7 +13,7 @@ export async function runInteractiveMode() {
     );
 
     if (files.length === 0) {
-        console.log(chalk.yellow('⚠ No OpenAPI files (.yaml, .yml, .json) found in current directory.'));
+        console.log(chalk.yellow('No OpenAPI files (.yaml, .yml, .json) found in current directory.'));
         const { manualFile } = await inquirer.prompt([
             {
                 type: 'input',
@@ -29,7 +29,7 @@ export async function runInteractiveMode() {
     const choices = [
         ...files,
         new inquirer.Separator(),
-        { name: '📂 Enter custom path manually...', value: 'REQ_MANUAL_PATH' }
+        { name: 'Enter custom path manually...', value: 'REQ_MANUAL_PATH' }
     ];
 
     const { selectedFile } = await inquirer.prompt([

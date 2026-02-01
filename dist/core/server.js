@@ -9,6 +9,7 @@ const express_1 = __importDefault(require("express"));
 const json_schema_faker_1 = __importDefault(require("json-schema-faker"));
 const faker_1 = require("@faker-js/faker");
 const chalk_1 = __importDefault(require("chalk"));
+const cors_1 = __importDefault(require("cors"));
 json_schema_faker_1.default.extend('faker', () => faker_1.faker);
 json_schema_faker_1.default.option({
     alwaysFakeOptionals: true,
@@ -41,6 +42,7 @@ function chaosMiddleware(failureRate = 0.1) {
 }
 function createMockApp(api, enableDelay = false, enableChaos = false) {
     const app = (0, express_1.default)();
+    app.use((0, cors_1.default)());
     app.use(express_1.default.json());
     if (enableDelay) {
         app.use(delayMiddleware());

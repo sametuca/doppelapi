@@ -4,6 +4,7 @@ import { Server } from 'http';
 import jsf from 'json-schema-faker';
 import { faker } from '@faker-js/faker';
 import chalk from 'chalk';
+import cors from 'cors';
 
 // Register faker with json-schema-faker for x-faker support
 jsf.extend('faker', () => faker);
@@ -45,6 +46,10 @@ function chaosMiddleware(failureRate: number = 0.1) {
 
 export function createMockApp(api: OpenAPI.Document, enableDelay = false, enableChaos = false): express.Express {
     const app = express();
+    
+    // Enable CORS for all routes
+    app.use(cors());
+    
     app.use(express.json());
 
     // Add delay middleware if enabled

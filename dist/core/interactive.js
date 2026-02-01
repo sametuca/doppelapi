@@ -23,14 +23,35 @@ async function runInteractiveMode() {
         ]);
         return promptRest(manualFile);
     }
+    const choices = [
+        ...files,
+        new inquirer_1.default.Separator(),
+        { name: '📂 Enter custom path manually...', value: 'REQ_MANUAL_PATH' }
+    ];
     const { selectedFile } = await inquirer_1.default.prompt([
         {
             type: 'list',
             name: 'selectedFile',
-            message: 'Select an OpenAPI definition file:',
-            choices: files
+            message: 'Select an OpenAPI file (or choose custom path):',
+            choices: choices,
+            pageSize: 10
         }
     ]);
+    if (selectedFile === 'REQ_MANUAL_PATH') {
+        const { manualPath } = await inquirer_1.default.prompt([
+            {
+                type: 'input',
+                name: 'manualPath',
+                message: 'Enter the full path to your OpenAPI file:',
+                validate: (input) => {
+                    if (fs_1.default.existsSync(input))
+                        return true;
+                    return 'File not found. Please check the path and try again.';
+                }
+            }
+        ]);
+        return promptRest(manualPath.trim());
+    }
     return promptRest(selectedFile);
 }
 async function promptRest(file) {

@@ -3,6 +3,7 @@ import { OpenAPI, OpenAPIV3 } from 'openapi-types';
 import { Server } from 'http';
 import jsf from 'json-schema-faker';
 import { faker } from '@faker-js/faker';
+import chalk from 'chalk';
 
 // Register faker with json-schema-faker for x-faker support
 jsf.extend('faker', () => faker);
@@ -22,7 +23,7 @@ export function createMockApp(api: OpenAPI.Document): express.Express {
 
     // Log requests
     app.use((req, _res, next) => {
-        console.log(`${new Date().toISOString()} | ${req.method} ${req.url}`);
+        console.log(`${chalk.gray(new Date().toISOString())} | ${req.method} ${req.url}`);
         next();
     });
 
@@ -41,7 +42,7 @@ export function createMockApp(api: OpenAPI.Document): express.Express {
             const operation = (pathItem as any)[method] as OpenAPIV3.OperationObject | undefined;
 
             if (operation) {
-                console.log(`Registering route: ${method.toUpperCase().padEnd(6)} ${expressPath}`);
+                // Removed verbose log: console.log(`Registering route: ...`);
 
                 app[method](expressPath, async (_req: Request, res: Response) => {
                     try {
@@ -85,8 +86,29 @@ export function startMockServer(api: OpenAPI.Document, port: number): Server {
     const app = createMockApp(api);
 
     const server = app.listen(port, () => {
-        console.log(`\n🚀 MockDraft server running at http://localhost:${port}`);
-        console.log(`   Serving mock API for: ${api.info.title} v${api.info.version}`);
+        console.log(chalk.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
+        console.log(chalk.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
+        console.log(chalk.bold('\n🔗 Available Endpoints:'));
+
+        const paths = api.paths || {};
+        Object.entries(paths).forEach(([pathName, pathItem]) => {
+            if (!pathItem) return;
+            const methods = ['get', 'post', 'put', 'delete', 'patch'] as const;
+
+            methods.forEach((method) => {
+                if ((pathItem as any)[method]) {
+                    const methodStr = method.toUpperCase().padEnd(6);
+                    let color = chalk.white;
+                    if (method === 'get') color = chalk.blue;
+                    if (method === 'post') color = chalk.green;
+                    if (method === 'put') color = chalk.yellow;
+                    if (method === 'delete') color = chalk.red;
+
+                    console.log(`   ${color(methodStr)} http://localhost:${port}${pathName}`);
+                }
+            });
+        });
+        console.log(''); // Empty line
     });
 
     return server;

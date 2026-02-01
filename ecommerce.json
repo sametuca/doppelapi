@@ -1,0 +1,260 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "E-Commerce Mock API",
+        "version": "1.0.0",
+        "description": "A comprehensive e-commerce API mocking products, orders, and customers."
+    },
+    "servers": [
+        {
+            "url": "https://api.mockdraft.com/v1"
+        }
+    ],
+    "paths": {
+        "/products": {
+            "get": {
+                "summary": "List all products",
+                "operationId": "listProducts",
+                "responses": {
+                    "200": {
+                        "description": "A paged array of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{productId}": {
+            "get": {
+                "summary": "Info for a specific product",
+                "operationId": "showProductById",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Expected response to a valid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "post": {
+                "summary": "Create a new order",
+                "operationId": "createOrder",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/profile": {
+            "get": {
+                "summary": "Get current customer profile",
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "Current customer profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Customer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Product": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "name",
+                    "price",
+                    "category"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "x-faker": "string.uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "x-faker": "commerce.productName"
+                    },
+                    "description": {
+                        "type": "string",
+                        "x-faker": "commerce.productDescription"
+                    },
+                    "price": {
+                        "type": "string",
+                        "x-faker": "commerce.price"
+                    },
+                    "category": {
+                        "type": "string",
+                        "x-faker": "commerce.department"
+                    },
+                    "image": {
+                        "type": "string",
+                        "x-faker": "image.url"
+                    }
+                }
+            },
+            "Customer": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "x-faker": "string.uuid"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "x-faker": "person.firstName"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "x-faker": "person.lastName"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "x-faker": "internet.email"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "x-faker": "phone.number"
+                    },
+                    "address": {
+                        "type": "object",
+                        "properties": {
+                            "street": {
+                                "type": "string",
+                                "x-faker": "location.streetAddress"
+                            },
+                            "city": {
+                                "type": "string",
+                                "x-faker": "location.city"
+                            },
+                            "country": {
+                                "type": "string",
+                                "x-faker": "location.country"
+                            }
+                        }
+                    }
+                }
+            },
+            "Order": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "status",
+                    "total",
+                    "items"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "x-faker": "string.uuid"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "shipped",
+                            "delivered",
+                            "cancelled"
+                        ],
+                        "example": "shipped"
+                    },
+                    "total": {
+                        "type": "number",
+                        "x-faker": "commerce.price"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "x-faker": "date.past"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Product"
+                        }
+                    }
+                }
+            },
+            "CreateOrderRequest": {
+                "type": "object",
+                "required": [
+                    "productIds"
+                ],
+                "properties": {
+                    "productIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    "shippingAddress": {
+                        "type": "string",
+                        "x-faker": "location.streetAddress"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -4,7 +4,7 @@ import fs from 'fs';
 import chalk from 'chalk';
 
 export async function runInteractiveMode() {
-    console.log(chalk.bold.cyan('\n👋 Welcome to MockDraft!'));
+    console.log(chalk.bold.cyan('\n👋 Welcome to DoppelAPI!'));
     console.log(chalk.dim('Let\'s get your mock server up and running.\n'));
 
     // 1. Find OpenAPI files

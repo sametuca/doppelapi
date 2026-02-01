@@ -8,7 +8,7 @@ import { runInteractiveMode } from './core/interactive';
 const program = new Command();
 
 program
-  .name('mockdraft')
+  .name('doppelapi')
   .description('Turn your OpenAPI file into a smart mock server in seconds.')
   .version('1.0.0');
 

@@ -143,13 +143,13 @@ export function startMockServer(api: OpenAPI.Document, port: number, enableDelay
     });
 
     // Add Dashboard endpoint
-    app.get('/_mockdraft', async (_req: Request, res: Response) => {
+    app.get('/_doppelapi', async (_req: Request, res: Response) => {
         const html = await generateDashboard(api, port, enableDelay, enableChaos);
         res.send(html);
     });
 
     const server = app.listen(port, () => {
-        console.log(chalk.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
+        console.log(chalk.green(`\n🚀 DoppelAPI server running at http://localhost:${port}`));
         console.log(chalk.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
         if (enableDelay) {
             console.log(chalk.yellow(`   ⏱️  Latency simulation: ENABLED (500-1500ms)`));
@@ -179,7 +179,7 @@ export function startMockServer(api: OpenAPI.Document, port: number, enableDelay
         });
 
         console.log(chalk.cyan(`\n📦 Postman Collection: http://localhost:${port}/_postman/collection.json`));
-        const dashboardUrl = `http://localhost:${port}/_mockdraft`;
+        const dashboardUrl = `http://localhost:${port}/_doppelapi`;
         console.log(chalk.magenta(`✨ Dashboard:          ${dashboardUrl}`));
         console.log(''); // Empty line
 

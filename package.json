@@ -1,10 +1,10 @@
 {
-  "name": "mockdraft",
+  "name": "doppelapi",
   "version": "1.0.0",
-  "description": "A TypeScript CLI tool",
+  "description": "The digital twin of your backend - Instant OpenAPI Mock Server",
   "main": "dist/index.js",
   "bin": {
-    "mockdraft": "dist/index.js"
+    "doppelapi": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",

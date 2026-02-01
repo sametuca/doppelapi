@@ -10,6 +10,7 @@ const json_schema_faker_1 = __importDefault(require("json-schema-faker"));
 const faker_1 = require("@faker-js/faker");
 const chalk_1 = __importDefault(require("chalk"));
 const cors_1 = __importDefault(require("cors"));
+const postman_1 = require("./postman");
 json_schema_faker_1.default.extend('faker', () => faker_1.faker);
 json_schema_faker_1.default.option({
     alwaysFakeOptionals: true,
@@ -93,6 +94,32 @@ function createMockApp(api, enableDelay = false, enableChaos = false) {
 }
 function startMockServer(api, port, enableDelay = false, enableChaos = false) {
     const app = createMockApp(api, enableDelay, enableChaos);
+    app.get('/_postman/collection.json', (_req, res) => {
+        try {
+            const baseUrl = `http://localhost:${port}`;
+            const collection = (0, postman_1.generatePostmanCollection)(api, baseUrl);
+            res.setHeader('Content-Disposition', 'attachment; filename="collection.json"');
+            res.json(collection);
+            console.log(chalk_1.default.cyan('📦 Postman collection exported'));
+        }
+        catch (error) {
+            console.error('Error generating Postman collection:', error);
+            res.status(500).json({ error: 'Failed to generate Postman collection' });
+        }
+    });
+    app.get('/_postman/collection.json', (_req, res) => {
+        try {
+            const baseUrl = `http://localhost:${port}`;
+            const collection = (0, postman_1.generatePostmanCollection)(api, baseUrl);
+            res.setHeader('Content-Disposition', 'attachment; filename="collection.json"');
+            res.json(collection);
+            console.log(chalk_1.default.cyan('📦 Postman collection exported'));
+        }
+        catch (error) {
+            console.error('Error generating Postman collection:', error);
+            res.status(500).json({ error: 'Failed to generate Postman collection' });
+        }
+    });
     const server = app.listen(port, () => {
         console.log(chalk_1.default.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
         console.log(chalk_1.default.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
@@ -124,6 +151,7 @@ function startMockServer(api, port, enableDelay = false, enableChaos = false) {
                 }
             });
         });
+        console.log(chalk_1.default.cyan(`\n📦 Postman Collection: http://localhost:${port}/_postman/collection.json`));
         console.log('');
     });
     return server;

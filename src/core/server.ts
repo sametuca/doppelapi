@@ -5,6 +5,7 @@ import jsf from 'json-schema-faker';
 import { faker } from '@faker-js/faker';
 import chalk from 'chalk';
 import cors from 'cors';
+import { generatePostmanCollection } from './postman';
 
 // Register faker with json-schema-faker for x-faker support
 jsf.extend('faker', () => faker);
@@ -126,6 +127,34 @@ export function createMockApp(api: OpenAPI.Document, enableDelay = false, enable
 export function startMockServer(api: OpenAPI.Document, port: number, enableDelay = false, enableChaos = false): Server {
     const app = createMockApp(api, enableDelay, enableChaos);
 
+    // Add Postman collection export endpoint
+    app.get('/_postman/collection.json', (_req: Request, res: Response) => {
+        try {
+            const baseUrl = `http://localhost:${port}`;
+            const collection = generatePostmanCollection(api, baseUrl);
+            res.setHeader('Content-Disposition', 'attachment; filename="collection.json"');
+            res.json(collection);
+            console.log(chalk.cyan('📦 Postman collection exported'));
+        } catch (error) {
+            console.error('Error generating Postman collection:', error);
+            res.status(500).json({ error: 'Failed to generate Postman collection' });
+        }
+    });
+
+    // Add Postman collection export endpoint
+    app.get('/_postman/collection.json', (_req: Request, res: Response) => {
+        try {
+            const baseUrl = `http://localhost:${port}`;
+            const collection = generatePostmanCollection(api, baseUrl);
+            res.setHeader('Content-Disposition', 'attachment; filename="collection.json"');
+            res.json(collection);
+            console.log(chalk.cyan('📦 Postman collection exported'));
+        } catch (error) {
+            console.error('Error generating Postman collection:', error);
+            res.status(500).json({ error: 'Failed to generate Postman collection' });
+        }
+    });
+
     const server = app.listen(port, () => {
         console.log(chalk.green(`\n🚀 MockDraft server running at http://localhost:${port}`));
         console.log(chalk.dim(`   Serving mock API for: ${api.info.title} v${api.info.version}`));
@@ -155,6 +184,8 @@ export function startMockServer(api: OpenAPI.Document, port: number, enableDelay
                 }
             });
         });
+        
+        console.log(chalk.cyan(`\n📦 Postman Collection: http://localhost:${port}/_postman/collection.json`));
         console.log(''); // Empty line
     });
 
